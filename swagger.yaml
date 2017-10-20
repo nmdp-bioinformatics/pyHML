@@ -1,0 +1,239 @@
+---
+swagger: "2.0"
+info:
+  description: "The Allele Calling  service provides an API for converting raw sequence\
+    \ data to GFE and HLA allele calls."
+  version: "0.0.4"
+  title: "Allele Calling Service"
+  contact:
+    email: "mhalagan@nmdp.org"
+  license:
+    name: "GNU GENERAL PUBLIC LICENSE"
+    url: "https://www.gnu.org/licenses/lgpl.html"
+paths:
+  /persisted_data:
+    get:
+      description: "Get HLA and GFE from consensus sequence or GFE notation"
+      operationId: "persist_get"
+      produces:
+        - "application/json"
+      parameters:
+      - name: "neo4j_url"
+        in: "query"
+        description: "URL for the neo4j graph"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Persisted sequence data"
+          schema:
+            $ref: "#/definitions/HML"
+definitions:
+  HML:
+    type: "object"
+    properties:
+      project_name:
+        type: "string"
+      version:
+        type: "string"
+      schemaLocation: 
+        type: "string"
+      reporting_center:
+          $ref: "#/definitions/ReportingCenter"
+      sample:
+          type: "array"
+          items:
+            $ref: "#/definitions/Sample"
+
+  ReportingCenter:
+    type: "object"
+    properties:
+      reporting_center_context:
+        type: "string"
+      reporting_center_id:
+        type: "string"
+
+  Sample:
+    type: "object"
+    properties:
+      center_code:
+        type: "integer"
+      id:
+        type: "string"
+      collection_method:
+        type: "string"
+      typing:
+        type: "array"
+        items:
+          $ref: "#/definitions/Typing"
+
+  Typing:
+    type: "object"
+    properties:
+      date:
+        type: "string"
+      gene_family:
+        type: "string"
+      allele_assignment:
+        type: "array"
+        items:
+          $ref: "#/definitions/AlleleAssignment"
+      consensus_sequence:
+        type: "array"
+        items:
+          $ref: "#/definitions/Consensus"
+      typing_method:
+        $ref: "#/definitions/TypingMethod"
+
+  AlleleAssignment:
+    type: "object"
+    properties:
+      allele_db:
+        type: "string"
+      allele_version:
+        type: "string"
+      date:
+        type: "string"
+      glstring:
+        type: "array"
+        items:
+          type: "string"
+      haploid:
+        $ref: "#/definitions/Haploid"
+
+  Haploid:
+    type: "object"
+    properties:
+      locus:
+        type: "string"
+      method:
+        type: "string"
+      type:
+        type: "string"
+
+  Consensus:
+    type: "object"
+    properties:
+      date:
+        type: "string"
+      consensus_sequence_block:
+        type: "array"
+        items:
+          $ref: "#/definitions/ConsensusSeqBlock"
+      reference_database:
+        type: "array"
+        items:
+          $ref: "#/definitions/RefDatabase"
+
+  SeqQuality:
+    type: "object"
+    properties:
+      quality_score:
+        type: "integer"
+      sequence_end:
+        type: "integer"
+      sequence_start:
+        type: "integer"
+
+  ConsensusSeqBlock:
+    type: "object"
+    properties:
+      continuity:
+        type: "boolean"
+      description:
+        type: "string"
+      end:
+        type: "integer"
+      expected_copy_number:
+        type: "integer"
+      phase_set:
+        type: "string"
+      reference_sequence_id:
+        type: "string"
+      start:
+        type: "integer"
+      strand:
+        type: "string"
+      sequence: 
+        type: "string"
+      sequence_quality:
+        type: "array"
+        items:
+          $ref: "#/definitions/SeqQuality"
+      variant:
+        type: "array"
+        items:
+          $ref: "#/definitions/Variant"
+
+  Variant:
+    type: "object"
+    properties:
+      alternate_bases:
+        type: "string"
+      end:
+        type: "integer"
+      reference_bases:
+        type: "string"
+      start:
+        type: "integer"
+      variant_effect:
+        $ref: "#/definitions/VariantEffect"
+
+  VariantEffect:
+    type: "object"
+    properties:
+      term:
+        type: "string"
+
+  RefDatabase:
+    type: "object"
+    properties:
+      availability:
+        type: "string"
+      curated:
+        type: "boolean"
+      description:
+        type: "string"
+      name:
+        type: "string"
+      uri:
+        type: "string"
+      version:
+        type: "string"
+      reference_sequence:
+        type: "array"
+        items:
+          $ref: "#/definitions/RefSequence"
+
+  RefSequence:
+    type: "object"
+    properties:
+      accession:
+        type: "string"
+      end:
+        type: "integer"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      start:
+        type: "integer"
+      uri:
+        type: "string"
+
+  TypingMethod:
+    type: "object"
+    properties:
+      sbt_ngs:
+        $ref: "#/definitions/SbtNgs"
+
+  SbtNgs:
+    type: "object"
+    properties:
+      locus:
+        type: "string"
+      test_id:
+        type: "string"
+      test_id_source:
+        type: "string"
+
