@@ -190,7 +190,12 @@ class Typing(Model):
     def create_seqrecord(self, subid):
         als = self.allele_assignment
         con = self.consensus_sequence
-        loc = als[0].glstring[0].split("*")[0]
+
+        loc = ''
+        if als[0].glstring:
+            loc = als[0].glstring[0].split("*")[0]
+        elif als[0].haploid:
+            loc = als[0].haploid[0].locus
 
         dbversion = []
         glstrings = []

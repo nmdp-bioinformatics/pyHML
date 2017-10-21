@@ -42,6 +42,7 @@ from pyhml.models.typing_method import TypingMethod
 from pyhml.models.consensus_seq_block import ConsensusSeqBlock
 from pyhml.models.ref_database import RefDatabase
 from pyhml.models.ref_sequence import RefSequence
+from pyhml.models.haploid import Haploid
 import pandas as pd
 
 
@@ -57,6 +58,20 @@ class HmlParser(object):
     hml_filters = hml.filterby('locus', value='HLA-A')
     df = toDF(hml)
 
+    hmlparser.object_tree
+
+    hml.filter('project_id', values=['200-1'])
+    - default type='eq'
+
+    hml.filter('typing:date', type='gt', values=['2017-09-10')
+
+    hml.filter('sample:typing:date', type='gt', values=['2017-09-10')
+
+    'sample:typing:allele_assignment:allele_version'
+    
+    summarydf = hml.summary()
+
+    hml-parser -i hml_example.xml -o 
     sequences = hml_filters.sequence_records
     SeqIO.write(sequence, 'seqfile.fasta', 'fasta')
     SeqIO.write(sequence, 'seqfile.imgt', 'imgt')
@@ -68,18 +83,26 @@ class HmlParser(object):
         """
         data_dir = os.path.dirname(__file__)
         self.schemas = {}
-        self.versions = ['1.0.1', '1.0', '0.9.4', '0.9.5', '0.9.6', '0.9.7', '1.0.2']
+        self.versions = ['1.0.1', '1.0', '0.9.4', '0.9.5',
+                         '0.9.6', '0.9.7', '1.0.2']
         if not hmlversion:
             for ver in self.versions:
                 xsd_file = data_dir + '/data/hml-' + ver + '.xsd'
                 self.schemas.update({ver: xmlschema.XMLSchema(xsd_file)})
 
     def parse(self, hml_file):
+        """
+        Sets the typing of this Sample.
+
+        :param typing: The typing of this Sample.
+        :type typing: List[Typing]
+        """
         hml_version = self._get_version(hml_file)
         schema = self.schemas[hml_version]
-        hml_data = schema.to_dict(hml_file)
+        schema.validate(hml_file)
+        hml_data = self._fill_blank(schema.to_dict(hml_file))
         rpc = ReportingCenter(reporting_center_context=hml_data['hmlns:reporting-center']['@reporting-center-context'],
-                              reporting_center_id=hml_data['hmlns:reporting-center']['@reporting-center-id'])
+                              reporting_center_id=hml_data['hmlns:reporting-center']['@reporting-center-context'])
         hml = HML(project_name=hml_data['@project-name'],
                   version=hml_data['@version'],
                   schema_location=hml_data['@xsi:schemaLocation'],
@@ -103,12 +126,20 @@ class HmlParser(object):
                     allele_db = assignment['@allele-db']
                     db = assignment['@allele-version']
                     type_date = assignment['@date']
+                    haploids = []
+                    if 'hmlns:haploid' in assignment:
+                        for hap in assignment['hmlns:haploid']:
+                            haploid = Haploid(locus=hap['@locus'],
+                                              method=hap['@method'],
+                                              type=hap['@type'])
+                            haploids.append(haploid)
                     gls = [gl.strip() for gl in assignment['hmlns:glstring']
                            if re.search("\*\d", gl)]
                     allele_assignment = AlleleAssignment(allele_db=allele_db,
                                                          allele_version=db,
                                                          date=type_date,
-                                                         glstring=gls)
+                                                         glstring=gls,
+                                                         haploid=haploids)
                     allele_assignments.append(allele_assignment)
                 consensus_seqs = []
                 if 'hmlns:consensus-sequence' in typing_data:
@@ -161,6 +192,65 @@ class HmlParser(object):
         hml.sample = samples
         return hml
 
+    def _fill_blank(self, xmldata):
+        """
+        Sets the typing of this Sample.
+
+        :param typing: The typing of this Sample.
+        :type typing: List[Typing]
+        """
+        if 'hmlns:reporting-center' not in xmldata:
+            xmldata.update({'hmlns:reporting-center': {'@reporting-center-id': ''}})
+            xmldata['hmlns:reporting-center'].update({'@reporting-center-context': ''})
+        else:
+            rc = ['@reporting-center-id', '@reporting-center-context']
+            for rct in rc:
+                if rct not in xmldata['hmlns:reporting-center']:
+                    xmldata['hmlns:reporting-center'].update({rct: ''})
+
+        top_level = ['@project-name', '@version', '@xsi:schemaLocation']
+        for k in top_level:
+            if k not in xmldata:
+                xmldata.update({k: ''})
+
+        for i in range(0, len(xmldata['hmlns:sample'])):
+            for j in range(0, len(xmldata['hmlns:sample'][i]['hmlns:typing'])):
+                for k in range(0, len(xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:allele-assignment'])):
+                    if 'hmlns:glstring' not in xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:allele-assignment'][k]:
+                        xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:allele-assignment'][k].update({'hmlns:glstring': []})
+                typing_data = xmldata['hmlns:sample'][i]['hmlns:typing'][j]
+                if 'hmlns:consensus-sequence' in typing_data:
+                    for k in range(0, len(typing_data['hmlns:consensus-sequence'])):
+                        consensus = xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k]
+                        if '@date' not in consensus:
+                            xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k].update({'@date': ''})
+                        for l in range(0, len(consensus['hmlns:consensus-sequence-block'])):
+                            block = xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k]['hmlns:consensus-sequence-block'][l]
+                            conslevel = ['@continuity', '@description', '@end',
+                                         '@expected-copy-number', '@phase-set',
+                                         '@reference-sequence-id', '@start',
+                                         '@strand']
+                            for c in conslevel:
+                                if c not in block:
+                                    xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k]['hmlns:consensus-sequence-block'][l].update({c: ''})
+                        if 'hmlns:reference-database' in consensus:
+                            for l in range(0, len(consensus['hmlns:reference-database'])):
+                                for m in range(0, len(consensus['hmlns:reference-database'][l]['hmlns:reference-sequence'])):
+                                    seq_data = consensus['hmlns:reference-database'][l]['hmlns:reference-sequence'][m]
+                                    seq_level = ['@accession', '@end', '@id', '@name',
+                                                 '@start', '@uri']
+                                    for s in seq_level:
+                                        if s not in seq_data:
+                                            xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k]['hmlns:reference-database'][l]['hmlns:reference-sequence'][m].update({s: ''})
+
+                                ref_level = ['@availability', '@curated',
+                                             '@description', '@name', '@uri',
+                                             '@version']
+                                for r in ref_level:
+                                    if r not in xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k]['hmlns:reference-database'][l]:
+                                        xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:consensus-sequence'][k]['hmlns:reference-database'][l].update({r: ''})
+        return xmldata
+
     def _get_version(self, hmlfile):
         """
         Sets the typing of this Sample.
@@ -172,7 +262,9 @@ class HmlParser(object):
         with open(hmlfile) as fd:
             doc = xmltodict.parse(fd.read())
             fd.close()
-        return doc['hml']['@version']
+
+        k = list(doc.keys())[0]
+        return doc[k]['@version']
 
 
 def tobiotype(hml, outdir, dtype='fasta', by='subject'):
@@ -204,6 +296,7 @@ def tobiotype(hml, outdir, dtype='fasta', by='subject'):
 
 def toDF(hml):
     """
+    TODO: ADD typing date
     Sets the typing of this Sample.
 
     :param typing: The typing of this Sample.
@@ -218,7 +311,8 @@ def toDF(hml):
                 db = seqrc.description
                 row = [sample.id, loc, gl, db, seq]
                 data.append(row)
-    return pd.DataFrame(data, columns=['ID', 'Locus', 'glstring', 'dbversion', 'sequence'])
+    return pd.DataFrame(data, columns=['ID', 'Locus', 'glstring',
+                        'dbversion', 'sequence'])
 
 
 
