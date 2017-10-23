@@ -30,20 +30,20 @@ Features
 
 .. code-block:: python3
 
-    from pyhml.pyhml import HmlParser, toDF, tobiotype
+    from pyhml import parser
     hml_file = "hml_example.xml"
-    hmlparser = HmlParser()
+    hmlparser = parser.HmlParser()
     hml = hmlparser.parse(hml_file)
     outdir = 'output/directory'
 
     # Print out each subject in fasta format
-    tobiotype(hml, outdir, dtype='fasta', by='subject')
+    parser.tobiotype(hml, outdir, dtype='fasta', by='subject')
 
     # Print out the full HML file in IMGT dat file format
-    tobiotype(hml, outdir, dtype='imgt', by='hml')
+    parser.tobiotype(hml, outdir, dtype='imgt', by='hml')
 
     # Get pandas DF from HML object
-    pandasdf = toDF(hml)
+    pandasdf = parser.toDF(hml)
     print(pandasdf)
 
              ID     Locus                             glstring dbversion  \

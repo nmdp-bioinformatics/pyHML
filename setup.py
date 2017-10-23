@@ -51,6 +51,7 @@ setup(
     url='https://github.com/mhalagan-nmdp/pyhml',
     packages=[
         'pyhml',
+        'pyhml.models'
     ],
     package_dir={'pyhml':
                  'pyhml'},
