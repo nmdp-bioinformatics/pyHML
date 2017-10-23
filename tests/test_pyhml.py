@@ -39,13 +39,14 @@ import unittest
 from pyhml import pyhml
 
 
-
 class TestPyhml(unittest.TestCase):
 
     def setUp(self):
+        hmlparser = pyhml.HmlParser()
         pass
 
     def tearDown(self):
+        self.assertEqual('foo'.upper(), 'FOO')
         pass
 
     def test_000_something(self):
