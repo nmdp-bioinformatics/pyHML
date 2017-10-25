@@ -21,8 +21,10 @@
 #    > http://www.fsf.org/licensing/licenses/lgpl.html
 #    > http://www.opensource.org/licenses/lgpl-license.php
 #
-
-
+from __future__ import absolute_import
+from .pyhml import HmlParser
+from .pyhml import tobiotype
+from .pyhml import toDF
 
 __author__ = """Mike Halagan"""
 __email__ = 'mhalagan@nmdp.org'

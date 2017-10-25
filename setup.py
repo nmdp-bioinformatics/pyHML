@@ -34,7 +34,13 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'biopython',
+    'pandas',
+    'numpy',
+    'bson',
+    'six',
+    'xmlschema',
+    'xmltodict'
 ]
 
 test_requirements = [
@@ -48,7 +54,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author="Mike Halagan",
     author_email='mhalagan@nmdp.org',
-    url='https://github.com/mhalagan-nmdp/pyhml',
+    url='https://github.com/nmdp-bioinformatics/pyHML',
     packages=[
         'pyhml',
         'pyhml.models'
@@ -65,10 +71,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',

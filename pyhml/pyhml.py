@@ -296,7 +296,6 @@ def tobiotype(hml, outdir, dtype='fasta', by='subject'):
 
 def toDF(hml):
     """
-    TODO: ADD typing date
     Sets the typing of this Sample.
 
     :param typing: The typing of this Sample.

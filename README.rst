@@ -20,7 +20,6 @@ pyHML
 
 Python HML parser
 
-
 * Free software: LGPL 3.0
 * Documentation: https://pyhml.readthedocs.io.
 
@@ -30,20 +29,20 @@ Features
 
 .. code-block:: python3
 
-    from pyhml import parser
+    import pyhml
     hml_file = "hml_example.xml"
-    hmlparser = parser.HmlParser()
+    hmlparser = pyhml.HmlParser()
     hml = hmlparser.parse(hml_file)
     outdir = 'output/directory'
 
     # Print out each subject in fasta format
-    parser.tobiotype(hml, outdir, dtype='fasta', by='subject')
+    pyhml.tobiotype(hml, outdir, dtype='fasta', by='subject')
 
     # Print out the full HML file in IMGT dat file format
-    parser.tobiotype(hml, outdir, dtype='imgt', by='hml')
+    pyhml.tobiotype(hml, outdir, dtype='imgt', by='hml')
 
     # Get pandas DF from HML object
-    pandasdf = parser.toDF(hml)
+    pandasdf = pyhml.toDF(hml)
     print(pandasdf)
 
              ID     Locus                             glstring dbversion  \

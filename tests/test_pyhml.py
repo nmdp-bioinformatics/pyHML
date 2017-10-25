@@ -36,17 +36,20 @@ Tests for `pyhml` module.
 import sys
 import unittest
 
-from pyhml import pyhml
+from pyhml.pyhml import HmlParser
+from Bio import SeqIO
 
 
 class TestPyhml(unittest.TestCase):
 
     def setUp(self):
-        hmlparser = pyhml.HmlParser()
+        hmlparser = HmlParser()
+        self.assertEqual(isinstance(hmlparser, HmlParser), True)
         pass
 
     def tearDown(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+        in_seq = list(SeqIO.parse("example3.fasta", "fasta"))[0]
+
         pass
 
     def test_000_something(self):
