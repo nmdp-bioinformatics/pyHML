@@ -11,7 +11,7 @@ pyhml
     :show-inheritance:
 
 
-Objects
+Data Objects
 --------------------------------------
 
 HML
@@ -45,6 +45,22 @@ Consensus
 Consensus Block
 ~~~~~~~~~~~~~~~~
 .. automodule:: pyhml.models.consensus_seq_block
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Allele Assignment
+~~~~~~~~~~~~~~~~
+.. automodule:: pyhml.models.allele_assignment
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Allele Assignment
+~~~~~~~~~~~~~~~~
+.. automodule:: pyhml.models.allele_assignment
     :members:
     :undoc-members:
     :show-inheritance:

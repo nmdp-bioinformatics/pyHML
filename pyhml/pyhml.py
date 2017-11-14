@@ -48,34 +48,11 @@ import pandas as pd
 
 class HmlParser(object):
     """
-    hmlparser = HmlParser()
-    hml = hmlparser.parse(hml)
-    print(summary(hml, by='subject'))
-
-    printHml(hml, by='subject', type='fasta')
-
-    hml_filters = hml.filterby('date', cmp='lt', value='')
-    hml_filters = hml.filterby('locus', value='HLA-A')
-    df = toDF(hml)
-
-    hmlparser.object_tree
-
-    hml.filter('project_id', values=['200-1'])
-    - default type='eq'
-
-    hml.filter('typing:date', type='gt', values=['2017-09-10')
-
-    hml.filter('sample:typing:date', type='gt', values=['2017-09-10')
-
-    'sample:typing:allele_assignment:allele_version'
-    
-    summarydf = hml.summary()
-
-    hml-parser -i hml_example.xml -o 
-    sequences = hml_filters.sequence_records
-    SeqIO.write(sequence, 'seqfile.fasta', 'fasta')
-    SeqIO.write(sequence, 'seqfile.imgt', 'imgt')
-
+    import pyhml
+    hmlparser = pyhml.HmlParser()
+    hml_file = "hml_test.xml"
+    hml = hmlparser.parse(hml_file)
+    hml_df = pyhml.toDF(hml)
     """
     def __init__(self, hmlversion=None):
         """
@@ -194,10 +171,8 @@ class HmlParser(object):
 
     def _fill_blank(self, xmldata):
         """
-        Sets the typing of this Sample.
-
-        :param typing: The typing of this Sample.
-        :type typing: List[Typing]
+        Fills in blank elements that are needed when
+        parsing the HML file into python objects
         """
         if 'hmlns:reporting-center' not in xmldata:
             xmldata.update({'hmlns:reporting-center': {'@reporting-center-id': ''}})

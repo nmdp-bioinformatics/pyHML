@@ -87,7 +87,7 @@ Install
 
 .. code-block:: bash
 
-    pip install -e 'git+https://github.com/mhalagan-nmdp/pyHML.git#egg=0.0.1'
+    pip install pyhml
 
 
 Credits
