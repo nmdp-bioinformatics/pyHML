@@ -24,7 +24,6 @@
 #
 
 
-
 from setuptools import setup
 
 with open('README.rst') as readme_file:
@@ -61,7 +60,7 @@ setup(
     ],
     package_dir={'pyhml':
                  'pyhml'},
-    include_package_data=True,
+    package_data={'pyhml': ['data/*']},
     install_requires=requirements,
     license="LGPL 3.0",
     zip_safe=False,
@@ -71,9 +70,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     test_suite='tests',
     tests_require=test_requirements
