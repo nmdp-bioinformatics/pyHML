@@ -37,21 +37,46 @@ import sys
 import unittest
 
 from pyhml.pyhml import HmlParser
+from pyhml.models.hml import HML
 from Bio import SeqIO
+import os
+from pandas import DataFrame
 
 
 class TestPyhml(unittest.TestCase):
 
     def setUp(self):
-        hmlparser = HmlParser()
-        self.assertEqual(isinstance(hmlparser, HmlParser), True)
+        self.data_dir = os.path.dirname(__file__) + "/resources"
+        self.hmlparser = HmlParser(verbose=True)
+        self.assertIsInstance(self.hmlparser, HmlParser)
         pass
 
-    def tearDown(self):
-        in_seq = list(SeqIO.parse("example3.fasta", "fasta"))[0]
-
+    def test_001_gzip(self):
+        hml_file = self.data_dir + "/3054.hml101.xml.gz"
+        hml = self.hmlparser.parse(hml_file)
+        hml_df = hml.toPandas()
+        self.assertIsInstance(hml, HML)
+        self.assertIsInstance(hml_df, DataFrame)
+        hml_file1 = self.data_dir + "/3054.hml101-1.xml"
+        hml_unzipped = self.data_dir + "/3054.hml101.xml"
+        cmd_zip = "gzip " + hml_unzipped
+        cmd_cp = "cp " + hml_file1 + " " + hml_unzipped
+        os.system(cmd_cp)
+        os.system(cmd_zip)
         pass
 
-    def test_000_something(self):
+    def test_002_gzip(self):
+        hml_file = self.data_dir + "/2609.hml101.xml.gz"
+        hml = self.hmlparser.parse(hml_file)
+        hml_df = hml.toPandas()
+        self.assertIsInstance(hml, HML)
+        self.assertIsInstance(hml_df, DataFrame)
+        hml_file1 = self.data_dir + "/2609.hml101-1.xml"
+        hml_unzipped = self.data_dir + "/2609.hml101.xml"
+        cmd_zip = "gzip " + hml_unzipped
+        cmd_cp = "cp " + hml_file1 + " " + hml_unzipped
+        os.system(cmd_cp)
+        os.system(cmd_zip)
         pass
+
 

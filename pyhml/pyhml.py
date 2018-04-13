@@ -44,6 +44,14 @@ from pyhml.models.ref_database import RefDatabase
 from pyhml.models.ref_sequence import RefSequence
 from pyhml.models.haploid import Haploid
 import pandas as pd
+from sh import gunzip
+import os
+
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p',
+                    level=logging.INFO)
 
 
 class HmlParser(object):
@@ -54,18 +62,26 @@ class HmlParser(object):
     hml = hmlparser.parse(hml_file)
     hml_df = pyhml.toDF(hml)
     """
-    def __init__(self, hmlversion=None):
+    def __init__(self, hmlversion=None, verbose=False):
         """
         HmlParser - a model
         """
-        data_dir = os.path.dirname(__file__)
         self.schemas = {}
+        self.verbose = verbose
+        self.hmlversion = hmlversion
+        data_dir = os.path.dirname(__file__)
+        self.logger = logging.getLogger("Logger." + __name__)
         self.versions = ['1.0.1', '1.0', '0.9.4', '0.9.5',
                          '0.9.6', '0.9.7', '1.0.2']
         if not hmlversion:
             for ver in self.versions:
                 xsd_file = data_dir + '/data/hml-' + ver + '.xsd'
                 self.schemas.update({ver: xmlschema.XMLSchema(xsd_file)})
+                if self.verbose:
+                    self.logger.info("Loaded schema for " + str(ver))
+        else:
+            xsd_file = data_dir + '/data/hml-' + hmlversion + '.xsd'
+            self.schemas.update({hmlversion: xmlschema.XMLSchema(xsd_file)})
 
     def parse(self, hml_file):
         """
@@ -74,9 +90,30 @@ class HmlParser(object):
         :param typing: The typing of this Sample.
         :type typing: List[Typing]
         """
-        hml_version = self._get_version(hml_file)
+        # Unzip HML file if it has a .gz extention
+        if re.search("\.gz", hml_file):
+            if self.verbose:
+                self.logger.info("Unzipping and cleaning " + hml_file)
+            hml_file = self._unzip_clean(hml_file)
+
+        # Get the HML version from the HML file
+        if self.hmlversion:
+            hml_version = self.hmlversion
+        else:
+            hml_version = self._get_version(hml_file)
+            if self.verbose:
+                self.logger.info("HML " + hml_file)
+
+        # Get schema associated with the HML version
         schema = self.schemas[hml_version]
+
+        # Validate HML file with schema
         schema.validate(hml_file)
+
+        if self.verbose:
+            self.logger.info("Validated " + hml_file)
+
+        # Fill in any required blank fields
         hml_data = self._fill_blank(schema.to_dict(hml_file))
         rpc = ReportingCenter(reporting_center_context=hml_data['hmlns:reporting-center']['@reporting-center-context'],
                               reporting_center_id=hml_data['hmlns:reporting-center']['@reporting-center-context'])
@@ -241,58 +278,23 @@ class HmlParser(object):
         k = list(doc.keys())[0]
         return doc[k]['@version']
 
+    def _unzip_clean(self, hmlfile):
+        """
+        Sets the typing of this Sample.
 
-def tobiotype(hml, outdir, dtype='fasta', by='subject'):
-    """
-    Sets the typing of this Sample.
-
-    :param typing: The typing of this Sample.
-    :type typing: List[Typing]
-    """
-    if by == 'subject':
-        for sample in hml.sample:
-            sequence_records = []
-            for loc in sample.seq_records:
-                for seqrc in sample.seq_records[loc]:
-                    sequence_records.append(seqrc)
-
-            outfile = outdir + '/' + sample.id + '.' + dtype
-            SeqIO.write(sequence_records, outfile, dtype)
-    else:
-        sequence_records = []
-        for sample in hml.sample:
-            for loc in sample.seq_records:
-                for seqrc in sample.seq_records[loc]:
-                    sequence_records.append(seqrc)
-
-        outfile = outdir + '/' + hml.project_name + '.' + dtype
-        SeqIO.write(sequence_records, outfile, dtype)
-
-
-def toDF(hml):
-    """
-    Sets the typing of this Sample.
-
-    :param typing: The typing of this Sample.
-    :type typing: List[Typing]
-    """
-    data = []
-    for sample in hml.sample:
-        for loc in sample.seq_records:
-            for seqrc in sample.seq_records[loc]:
-                seq = str(seqrc.seq)
-                gl = seqrc.name
-                db = seqrc.description
-                row = [sample.id, loc, gl, db, seq]
-                data.append(row)
-    return pd.DataFrame(data, columns=['ID', 'Locus', 'glstring',
-                        'dbversion', 'sequence'])
-
-
-
-
-
-
-
+        :param typing: The typing of this Sample.
+        :type typing: List[Typing]
+        """
+        gunzip(hmlfile)
+        hml_unzipped = ".".join(hmlfile.split(".")[0:3])
+        cmd4 = "perl -p -i -e 's/<\?xml.+\?>//g' " + hml_unzipped
+        os.system(cmd4)
+        cmd1 = "perl -p -i -e 's/\?//g' " + hml_unzipped
+        os.system(cmd1)
+        cmd2 = "perl -p -i -e 's/ns2://g' " + hml_unzipped
+        os.system(cmd2)
+        cmd3 = "perl -p -i -e 's/:ns2//g' " + hml_unzipped
+        os.system(cmd3)
+        return hml_unzipped
 
 
