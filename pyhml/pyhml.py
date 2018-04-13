@@ -43,9 +43,8 @@ from pyhml.models.consensus_seq_block import ConsensusSeqBlock
 from pyhml.models.ref_database import RefDatabase
 from pyhml.models.ref_sequence import RefSequence
 from pyhml.models.haploid import Haploid
-import pandas as pd
+
 from sh import gunzip
-import os
 
 import logging
 
