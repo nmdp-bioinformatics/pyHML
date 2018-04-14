@@ -28,4 +28,4 @@ from .pyhml import toDF
 
 __author__ = """Mike Halagan"""
 __email__ = 'mhalagan@nmdp.org'
-__version__ = '0.0.2'
+__version__ = '0.0.3'

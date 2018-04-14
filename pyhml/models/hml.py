@@ -7,6 +7,8 @@ from .base_model_ import Model
 from datetime import date, datetime
 from typing import List, Dict
 from ..util import deserialize_model
+import pandas as pd
+from Bio import SeqIO
 
 
 class HML(Model):
@@ -168,3 +170,47 @@ class HML(Model):
 
         self._sample = sample
 
+    def toPandas(self):
+        """
+        Sets the typing of this Sample.
+
+        :param typing: The typing of this Sample.
+        :type typing: List[Typing]
+        """
+        data = []
+        for sample in self.sample:
+            for loc in sample.seq_records:
+                for seqrc in sample.seq_records[loc]:
+                    seq = str(seqrc.seq)
+                    gl = seqrc.name
+                    db = seqrc.description
+                    row = [sample.id, loc, gl, db, seq]
+                    data.append(row)
+        return pd.DataFrame(data, columns=['ID', 'Locus', 'glstring',
+                            'dbversion', 'sequence'])
+
+    def tobiotype(self, outdir, dtype='fasta', by='file'):
+        """
+        Converts an HML object to a BioPython data fromat
+
+        :param typing: The typing of this Sample.
+        :type typing: List[Typing]
+        """
+        if by == 'subject':
+            for sample in self.sample:
+                sequence_records = []
+                for loc in sample.seq_records:
+                    for seqrc in sample.seq_records[loc]:
+                        sequence_records.append(seqrc)
+
+                outfile = outdir + '/' + sample.id + '.' + dtype
+                SeqIO.write(sequence_records, outfile, dtype)
+        else:
+            sequence_records = []
+            for sample in self.sample:
+                for loc in sample.seq_records:
+                    for seqrc in sample.seq_records[loc]:
+                        sequence_records.append(seqrc)
+
+            outfile = outdir + '/' + self.project_name + '.' + dtype
+            SeqIO.write(sequence_records, outfile, dtype)
