@@ -36,11 +36,11 @@ requirements = [
     'biopython==1.70',
     'pandas==0.20.3',
     'numpy==1.14.2',
-    'bson==0.5.2',
     'six==1.11.0',
     'xmlschema==0.9.13',
     'xmltodict==0.11.0',
     'pytz==2018.3',
+    'sh==1.12.14',
     'python-dateutil==2.7.2'
 ]
 
@@ -50,7 +50,7 @@ test_requirements = [
 
 setup(
     name='pyhml',
-    version='0.0.3',
+    version='0.0.4',
     description="Python HML parser",
     long_description=readme + '\n\n' + history,
     author="Mike Halagan",

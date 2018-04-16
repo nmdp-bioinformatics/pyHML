@@ -23,9 +23,7 @@
 #
 from __future__ import absolute_import
 from .pyhml import HmlParser
-from .pyhml import tobiotype
-from .pyhml import toDF
 
 __author__ = """Mike Halagan"""
 __email__ = 'mhalagan@nmdp.org'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
