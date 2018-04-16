@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #    pyhml pyHML.
-#    Copyright (c) 2017 Be The Match operated by National Marrow Donor Program. All Rights Reserved.
+#    Copyright (c) 2018 Be The Match operated by National Marrow Donor Program. All Rights Reserved.
 #
 #    This library is free software; you can redistribute it and/or modify it
 #    under the terms of the GNU Lesser General Public License as published
@@ -22,31 +22,24 @@
 #
 import os
 import re
+import logging
 import xmlschema
 import xmltodict
 
-from Bio import SeqIO
-from Bio.SeqFeature import SeqFeature, FeatureLocation, ExactPosition
+from sh import gunzip
 from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from collections import OrderedDict
 from Bio.Alphabet import IUPAC
 
 from pyhml.models.hml import HML
-from pyhml.models.reporting_center import ReportingCenter
 from pyhml.models.sample import Sample
 from pyhml.models.typing import Typing
-from pyhml.models.allele_assignment import AlleleAssignment
+from pyhml.models.haploid import Haploid
 from pyhml.models.consensus import Consensus
-from pyhml.models.typing_method import TypingMethod
-from pyhml.models.consensus_seq_block import ConsensusSeqBlock
 from pyhml.models.ref_database import RefDatabase
 from pyhml.models.ref_sequence import RefSequence
-from pyhml.models.haploid import Haploid
-
-from sh import gunzip
-
-import logging
+from pyhml.models.reporting_center import ReportingCenter
+from pyhml.models.allele_assignment import AlleleAssignment
+from pyhml.models.consensus_seq_block import ConsensusSeqBlock
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -55,13 +48,26 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 class HmlParser(object):
     """
-    import pyhml
-    hmlparser = pyhml.HmlParser()
-    hml_file = "hml_test.xml"
-    hml = hmlparser.parse(hml_file)
-    hml_df = pyhml.toDF(hml)
+    A python HML parser that converts any valid HML
+    file into an python ``object``. Allows users to easily
+    interact with HML data as python objects. Users can
+    also easily convert the HML data to a pandas DataFrame. If
+    no ``hmlversion`` is provided, then the schemas for all
+    HML versions are loaded.
+
+    Examples:
+
+        >>> import pyhml
+        >>> hmlparser = pyhml.HmlParser(verbose=True)
+        >>> hml = hmlparser.parse(hml_file)
+        >>> hml_df = hml.toPandas()
+
+    :param hmlversion: A specific HML version to load.
+    :type hmlversion: str
+    :param verbose: Flag for running in verbose.
+    :type verbose: bool
     """
-    def __init__(self, hmlversion=None, verbose=False):
+    def __init__(self, hmlversion: str=None, verbose: bool=False):
         """
         HmlParser - a model
         """
@@ -70,6 +76,8 @@ class HmlParser(object):
         self.hmlversion = hmlversion
         data_dir = os.path.dirname(__file__)
         self.logger = logging.getLogger("Logger." + __name__)
+
+        # TODO: get schemas from hml.b12x.org
         self.versions = ['1.0.1', '1.0', '0.9.4', '0.9.5',
                          '0.9.6', '0.9.7', '1.0.2']
         if not hmlversion:
@@ -82,12 +90,17 @@ class HmlParser(object):
             xsd_file = data_dir + '/data/hml-' + hmlversion + '.xsd'
             self.schemas.update({hmlversion: xmlschema.XMLSchema(xsd_file)})
 
-    def parse(self, hml_file):
+    def parse(self, hml_file: str) -> HML:
         """
-        Sets the typing of this Sample.
+        Parses an HML file into a python object.
 
-        :param typing: The typing of this Sample.
-        :type typing: List[Typing]
+            >>> hml = hmlparser.parse(hml_file)
+            >>> hml_df = hml.toPandas()
+
+        :param hml_file: A valid HML file
+        :type: str
+        :return: Object containing HML data
+        :rtype: HML
         """
         # Unzip HML file if it has a .gz extention
         if re.search("\.gz", hml_file):
@@ -285,7 +298,7 @@ class HmlParser(object):
         :type typing: List[Typing]
         """
         gunzip(hmlfile)
-        hml_unzipped = ".".join(hmlfile.split(".")[0:3])
+        hml_unzipped = ".".join(hmlfile.split(".")[0:len(hmlfile.split("."))-1])
         cmd4 = "perl -p -i -e 's/<\?xml.+\?>//g' " + hml_unzipped
         os.system(cmd4)
         cmd1 = "perl -p -i -e 's/\?//g' " + hml_unzipped

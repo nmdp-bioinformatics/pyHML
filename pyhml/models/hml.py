@@ -9,6 +9,7 @@ from typing import List, Dict
 from ..util import deserialize_model
 import pandas as pd
 from Bio import SeqIO
+from pandas import DataFrame
 
 
 class HML(Model):
@@ -170,12 +171,19 @@ class HML(Model):
 
         self._sample = sample
 
-    def toPandas(self):
+    def toPandas(self) -> DataFrame:
         """
-        Sets the typing of this Sample.
+        Returns all the HML data as a pandas DataFrame.
 
-        :param typing: The typing of this Sample.
-        :type typing: List[Typing]
+        Examples:
+
+            >>> import pyhml
+            >>> hmlparser = pyhml.HmlParser(verbose=True)
+            >>> hml = hmlparser.parse(hml_file)
+            >>> hml_df = hml.toPandas()
+
+        :return: Pandas dataframe
+        :rtype: DataFrame
         """
         data = []
         for sample in self.sample:
@@ -193,8 +201,19 @@ class HML(Model):
         """
         Converts an HML object to a BioPython data fromat
 
-        :param typing: The typing of this Sample.
-        :type typing: List[Typing]
+        Examples:
+
+            >>> import pyhml
+            >>> hmlparser = pyhml.HmlParser(verbose=True)
+            >>> hml = hmlparser.parse(hml_file)
+            >>> hml.tobiotype("output/directory",dtype='imgt', by='subject')
+
+        :param outdir: The output directory
+        :type outdir: str
+        :param dtype: The BioPython output type
+        :type version: str
+        :param by: What to print out the HML file by
+        :type by: str
         """
         if by == 'subject':
             for sample in self.sample:

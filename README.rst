@@ -6,15 +6,15 @@ pyHML
 .. image:: https://img.shields.io/pypi/v/pyhml.svg
         :target: https://pypi.python.org/pypi/pyhml
 
-.. image:: https://img.shields.io/travis/mhalagan-nmdp/pyhml.svg
-        :target: https://travis-ci.org/mhalagan-nmdp/pyhml
+.. image:: https://img.shields.io/travis/nmdp-bioinformatics/pyhml.svg
+        :target: https://travis-ci.org/nmdp-bioinformatics/pyhml
 
 .. image:: https://readthedocs.org/projects/pyhml/badge/?version=latest
         :target: https://pyhml.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://pyup.io/repos/github/mhalagan-nmdp/pyhml/shield.svg
-     :target: https://pyup.io/repos/github/mhalagan-nmdp/pyhml/
+.. image:: https://pyup.io/repos/github/nmdp-bioinformatics/pyHML/shield.svg
+     :target: https://pyup.io/repos/github/nmdp-bioinformatics/pyHML/
      :alt: Updates
 
 
@@ -22,7 +22,7 @@ Python HML parser
 
 * Free software: LGPL 3.0
 * Documentation: https://pyhml.readthedocs.io.
-
+* `Jupyter Notebook`_
 
 Features
 --------
@@ -36,13 +36,13 @@ Features
     outdir = 'output/directory'
 
     # Print out each subject in fasta format
-    pyhml.tobiotype(hml, outdir, dtype='fasta', by='subject')
+    hml.tobiotype(outdir, dtype='fasta', by='subject')
 
     # Print out the full HML file in IMGT dat file format
-    pyhml.tobiotype(hml, outdir, dtype='imgt', by='hml')
+    hml.tobiotype(outdir, dtype='imgt', by='hml')
 
     # Get pandas DF from HML object
-    pandasdf = pyhml.toDF(hml)
+    pandasdf = hml.toPandas()
     print(pandasdf)
 
              ID     Locus                             glstring dbversion  \
@@ -97,4 +97,4 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
-
+.. _`Jupyter Notebook`: https://github.com/nmdp-bioinformatics/pyHML/blob/master/notebook/Examples.ipynb

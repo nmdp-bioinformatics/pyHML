@@ -32,14 +32,14 @@ test_pyhml
 Tests for `pyhml` module.
 """
 
-
+import os
 import sys
 import unittest
 
 from pyhml.pyhml import HmlParser
 from pyhml.models.hml import HML
+
 from Bio import SeqIO
-import os
 from pandas import DataFrame
 
 
