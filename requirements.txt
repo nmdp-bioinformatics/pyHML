@@ -1,7 +1,7 @@
 biopython==1.71
 bson==0.5.2
 numpy==1.14.2
-pandas==0.20.3
+pandas==0.22.0
 python-dateutil==2.7.2
 pytz==2018.3
 six==1.11.0
