@@ -1,4 +1,4 @@
-biopython==1.70
+biopython==1.71
 bson==0.5.2
 numpy==1.14.2
 pandas==0.20.3
