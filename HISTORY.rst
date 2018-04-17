@@ -2,6 +2,12 @@
 History
 =======
 
+0.0.5 (2017-04-16)
+------------------
+
+* Improved documentation
+* Fixed issues with parsing HML files with NMDP-CORRECTION
+
 0.0.4 (2017-04-15)
 ------------------
 

@@ -6,8 +6,11 @@ pyHML
 .. image:: https://img.shields.io/pypi/v/pyhml.svg
         :target: https://pypi.python.org/pypi/pyhml
 
-.. image:: https://img.shields.io/travis/nmdp-bioinformatics/pyhml.svg
-        :target: https://travis-ci.org/nmdp-bioinformatics/pyhml
+.. image:: https://img.shields.io/travis/nmdp-bioinformatics/pyHML.svg
+        :target: https://travis-ci.org/nmdp-bioinformatics/pyHML
+
+.. image:: https://coveralls.io/repos/github/nmdp-bioinformatics/pyHML/badge.svg?branch=master
+		:target: https://coveralls.io/github/nmdp-bioinformatics/pyHML?branch=master
 
 .. image:: https://readthedocs.org/projects/pyhml/badge/?version=latest
         :target: https://pyhml.readthedocs.io/en/latest/?badge=latest
@@ -39,7 +42,7 @@ Features
     hml.tobiotype(outdir, dtype='fasta', by='subject')
 
     # Print out the full HML file in IMGT dat file format
-    hml.tobiotype(outdir, dtype='imgt', by='hml')
+    hml.tobiotype(outdir, dtype='imgt', by='file')
 
     # Get pandas DF from HML object
     pandasdf = hml.toPandas()

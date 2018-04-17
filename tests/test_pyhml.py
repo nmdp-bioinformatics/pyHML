@@ -36,8 +36,11 @@ import os
 import sys
 import unittest
 
+from pyhml.models.sample import Sample
+from pyhml.models.typing import Typing
 from pyhml.pyhml import HmlParser
 from pyhml.models.hml import HML
+
 
 from Bio import SeqIO
 from pandas import DataFrame
@@ -77,6 +80,29 @@ class TestPyhml(unittest.TestCase):
         cmd_cp = "cp " + hml_file1 + " " + hml_unzipped
         os.system(cmd_cp)
         os.system(cmd_zip)
+        pass
+
+    def test_003_sample(self):
+        sample = Sample(center_code='000', id='100000',
+                        collection_method='DNA')
+        self.assertIsInstance(sample, Sample)
+        self.assertEqual(sample.id, '100000')
+        self.assertEqual(sample.center_code, '000')
+        self.assertEqual(sample.collection_method, 'DNA')
+        pass
+
+    def test_004_sampleTyping(self):
+        sample = Sample(center_code='000', id='100000',
+                        collection_method='DNA')
+        typing = Typing(date='04-11-2011', gene_family='HLA')
+        sample.typing = [typing]
+        self.assertIsInstance(typing, Typing)
+        self.assertIsInstance(sample, Sample)
+        self.assertEqual(typing.gene_family, 'HLA')
+        self.assertIsInstance(sample.typing[0], Typing)
+        self.assertEqual(sample.id, '100000')
+        self.assertEqual(sample.center_code, '000')
+        self.assertEqual(sample.collection_method, 'DNA')
         pass
 
 

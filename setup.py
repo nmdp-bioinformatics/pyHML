@@ -33,7 +33,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'biopython==1.70',
+    'biopython==1.71',
     'pandas==0.20.3',
     'numpy==1.14.2',
     'six==1.11.0',
@@ -50,7 +50,7 @@ test_requirements = [
 
 setup(
     name='pyhml',
-    version='0.0.4',
+    version='0.0.5',
     description="Python HML parser",
     long_description=readme + '\n\n' + history,
     author="Mike Halagan",
