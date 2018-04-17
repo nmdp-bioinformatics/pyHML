@@ -3,14 +3,8 @@ pyHML
 ===============================
 
 
-.. image:: https://img.shields.io/pypi/v/pyhml.svg
-        :target: https://pypi.python.org/pypi/pyhml
-
 .. image:: https://img.shields.io/travis/nmdp-bioinformatics/pyHML.svg
         :target: https://travis-ci.org/nmdp-bioinformatics/pyHML
-
-.. image:: https://coveralls.io/repos/github/nmdp-bioinformatics/pyHML/badge.svg?branch=master
-		:target: https://coveralls.io/github/nmdp-bioinformatics/pyHML?branch=master
 
 .. image:: https://readthedocs.org/projects/pyhml/badge/?version=latest
         :target: https://pyhml.readthedocs.io/en/latest/?badge=latest
@@ -19,6 +13,13 @@ pyHML
 .. image:: https://pyup.io/repos/github/nmdp-bioinformatics/pyHML/shield.svg
      :target: https://pyup.io/repos/github/nmdp-bioinformatics/pyHML/
      :alt: Updates
+
+.. image:: https://img.shields.io/pypi/v/pyhml.svg
+        :target: https://pypi.python.org/pypi/pyhml
+
+.. image:: https://coveralls.io/repos/github/nmdp-bioinformatics/pyHML/badge.svg?branch=master
+		:target: https://coveralls.io/github/nmdp-bioinformatics/pyHML?branch=master
+
 
 
 Python HML parser
