@@ -95,7 +95,6 @@ class HmlParser(object):
         Parses an HML file into a python object.
 
             >>> hml = hmlparser.parse(hml_file)
-            >>> hml_df = hml.toPandas()
 
         :param hml_file: A valid HML file
         :type: str
@@ -160,7 +159,7 @@ class HmlParser(object):
                                               type=hap['@type'])
                             haploids.append(haploid)
                     gls = [gl.strip() for gl in assignment['hmlns:glstring']
-                           if re.search("\*\d", gl)]
+                           if gl and re.search("\*\d", gl)]
                     allele_assignment = AlleleAssignment(allele_db=allele_db,
                                                          allele_version=db,
                                                          date=type_date,
@@ -299,6 +298,8 @@ class HmlParser(object):
         """
         gunzip(hmlfile)
         hml_unzipped = ".".join(hmlfile.split(".")[0:len(hmlfile.split("."))-1])
+        cmd = "perl -p -i -e 's/<\?X-NMDP-CORRECTION TRUE\?><\?X-NMDP-NOREPORTS\?>//g' " + hml_unzipped
+        os.system(cmd)
         cmd4 = "perl -p -i -e 's/<\?xml.+\?>//g' " + hml_unzipped
         os.system(cmd4)
         cmd1 = "perl -p -i -e 's/\?//g' " + hml_unzipped
