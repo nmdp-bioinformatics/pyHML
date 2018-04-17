@@ -2,7 +2,7 @@
 deploy:
   true:
     condition: $TOXENV == py36
-    repo: nmdp-bioinformatics/pyhml
+    repo: nmdp-bioinformatics/pyHML
     tags: true
   distributions: sdist bdist_wheel
   password:
