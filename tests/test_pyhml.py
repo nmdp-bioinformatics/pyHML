@@ -55,13 +55,13 @@ class TestPyhml(unittest.TestCase):
         pass
 
     def test_001_gzip(self):
-        hml_file = self.data_dir + "/3054.hml101.xml.gz"
+        hml_file = self.data_dir + "/1111.hml101.xml.gz"
         hml = self.hmlparser.parse(hml_file)
         hml_df = hml.toPandas()
         self.assertIsInstance(hml, HML)
         self.assertIsInstance(hml_df, DataFrame)
-        hml_file1 = self.data_dir + "/3054.hml101-1.xml"
-        hml_unzipped = self.data_dir + "/3054.hml101.xml"
+        hml_file1 = self.data_dir + "/1111.hml101-1.xml"
+        hml_unzipped = self.data_dir + "/1111.hml101.xml"
         cmd_zip = "gzip " + hml_unzipped
         cmd_cp = "cp " + hml_file1 + " " + hml_unzipped
         os.system(cmd_cp)
@@ -69,13 +69,13 @@ class TestPyhml(unittest.TestCase):
         pass
 
     def test_002_gzip(self):
-        hml_file = self.data_dir + "/2609.hml101.xml.gz"
+        hml_file = self.data_dir + "/2222.hml101.xml.gz"
         hml = self.hmlparser.parse(hml_file)
         hml_df = hml.toPandas()
         self.assertIsInstance(hml, HML)
         self.assertIsInstance(hml_df, DataFrame)
-        hml_file1 = self.data_dir + "/2609.hml101-1.xml"
-        hml_unzipped = self.data_dir + "/2609.hml101.xml"
+        hml_file1 = self.data_dir + "/2222.hml101-1.xml"
+        hml_unzipped = self.data_dir + "/2222.hml101.xml"
         cmd_zip = "gzip " + hml_unzipped
         cmd_cp = "cp " + hml_file1 + " " + hml_unzipped
         os.system(cmd_cp)
