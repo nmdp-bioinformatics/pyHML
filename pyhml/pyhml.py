@@ -237,6 +237,8 @@ class HmlParser(object):
                 xmldata.update({k: ''})
 
         for i in range(0, len(xmldata['hmlns:sample'])):
+            if '@center-code' not in xmldata['hmlns:sample'][i]:
+                xmldata['hmlns:sample'][i].update({'@center-code': ''})
             for j in range(0, len(xmldata['hmlns:sample'][i]['hmlns:typing'])):
                 for k in range(0, len(xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:allele-assignment'])):
                     if 'hmlns:glstring' not in xmldata['hmlns:sample'][i]['hmlns:typing'][j]['hmlns:allele-assignment'][k]:

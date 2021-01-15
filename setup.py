@@ -50,7 +50,7 @@ test_requirements = [
 
 setup(
     name='pyhml',
-    version='0.0.5',
+    version='0.0.6',
     description="Python HML parser",
     long_description=readme + '\n\n' + history,
     author="Mike Halagan",
