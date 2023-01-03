@@ -35,7 +35,7 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'biopython==1.71',
     'pandas==0.20.3',
-    'numpy==1.14.2',
+    'numpy==1.22.0',
     'six==1.11.0',
     'xmlschema==0.9.13',
     'xmltodict==0.11.0',
